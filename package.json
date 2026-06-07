@@ -1,0 +1,16 @@
+{
+  "name": "projeto-carreira-native-ai",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build",
+    "start:api": "pnpm --filter api start",
+    "test:web": "pnpm --filter web test",
+    "test:api": "pnpm --filter api test",
+    "lint:web": "pnpm --filter web lint",
+    "lint:api": "pnpm --filter api lint"
+  }
+}
