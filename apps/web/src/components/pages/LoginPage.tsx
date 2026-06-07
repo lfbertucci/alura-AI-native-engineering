@@ -9,7 +9,7 @@ export function LoginPage() {
       title="Login"
       subtitle="Boas-vindas! Faça seu login."
     >
-      <LoginForm onSubmit={(values) => console.log('TODO: auth API', values)} />
+      <LoginForm onSubmit={() => console.log('TODO: connect auth API')} />
     </AuthTemplate>
   )
 }

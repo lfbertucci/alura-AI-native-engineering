@@ -14,6 +14,8 @@ interface LoginFormValues {
 
 interface LoginFormProps {
   onSubmit?: (values: LoginFormValues) => void
+  onGithubClick?: () => void
+  onGmailClick?: () => void
 }
 
 interface FormErrors {
@@ -23,13 +25,14 @@ interface FormErrors {
 
 function validate(identifier: string, password: string): FormErrors {
   const errors: FormErrors = {}
+  const trimmedPw = password.trim()
   if (!identifier.trim()) errors.identifier = 'Informe o email ou usuário'
-  if (!password.trim()) errors.password = 'Informe a senha'
-  else if (password.trim().length < 6) errors.password = 'A senha deve ter ao menos 6 caracteres'
+  if (!trimmedPw) errors.password = 'Informe a senha'
+  else if (trimmedPw.length < 6) errors.password = 'A senha deve ter ao menos 6 caracteres'
   return errors
 }
 
-export function LoginForm({ onSubmit }: LoginFormProps) {
+export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormProps) {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
@@ -43,7 +46,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
       return
     }
     setErrors({})
-    onSubmit?.({ identifier, password, remember })
+    onSubmit?.({ identifier: identifier.trim(), password: password.trim(), remember })
   }
 
   return (
@@ -91,7 +94,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
 
       <Divider label="ou entre com outras contas" />
 
-      <SocialLogins />
+      <SocialLogins onGithubClick={onGithubClick} onGmailClick={onGmailClick} />
 
       <p className="text-center text-sm text-[var(--color-text-muted)] mt-2">
         Ainda não tem conta?{' '}
