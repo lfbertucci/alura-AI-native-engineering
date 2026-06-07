@@ -24,8 +24,8 @@ interface FormErrors {
 function validate(identifier: string, password: string): FormErrors {
   const errors: FormErrors = {}
   if (!identifier.trim()) errors.identifier = 'Informe o email ou usuário'
-  if (!password) errors.password = 'Informe a senha'
-  else if (password.length < 6) errors.password = 'A senha deve ter ao menos 6 caracteres'
+  if (!password.trim()) errors.password = 'Informe a senha'
+  else if (password.trim().length < 6) errors.password = 'A senha deve ter ao menos 6 caracteres'
   return errors
 }
 
@@ -54,7 +54,10 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         type="text"
         placeholder="usuario123"
         value={identifier}
-        onChange={(e) => setIdentifier(e.target.value)}
+        onChange={(e) => {
+          setIdentifier(e.target.value)
+          if (errors.identifier) setErrors((prev) => ({ ...prev, identifier: undefined }))
+        }}
         error={errors.identifier}
         autoComplete="username"
       />
@@ -64,7 +67,10 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         type="password"
         placeholder="••••••"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          setPassword(e.target.value)
+          if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }))
+        }}
         error={errors.password}
         autoComplete="current-password"
       />

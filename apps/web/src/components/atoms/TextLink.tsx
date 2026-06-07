@@ -15,7 +15,7 @@ export function TextLink({ children, to, href, className = '' }: TextLinkProps) 
   }
 
   return (
-    <a href={href ?? '#'} className={base}>
+    <a href={href} className={base}>
       {children}
     </a>
   )
