@@ -6,63 +6,83 @@ import { Checkbox } from '../atoms/Checkbox'
 import { TextLink } from '../atoms/TextLink'
 import { Button } from '../atoms/Button'
 
-interface LoginFormValues {
-  identifier: string
+interface RegisterFormValues {
+  name: string
+  email: string
   password: string
   remember: boolean
 }
 
-interface LoginFormProps {
-  onSubmit?: (values: LoginFormValues) => void
+interface RegisterFormProps {
+  onSubmit?: (values: RegisterFormValues) => void
   onGithubClick?: () => void
   onGmailClick?: () => void
 }
 
 interface FormErrors {
-  identifier?: string
+  name?: string
+  email?: string
   password?: string
 }
 
-function validate(identifier: string, password: string): FormErrors {
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validate(name: string, email: string, password: string): FormErrors {
   const errors: FormErrors = {}
+  if (!name.trim()) errors.name = 'Informe o nome completo'
+  if (!email.trim()) errors.email = 'Informe o email'
+  else if (!EMAIL_REGEX.test(email.trim())) errors.email = 'Informe um email válido'
   const trimmedPw = password.trim()
-  if (!identifier.trim()) errors.identifier = 'Informe o email ou usuário'
   if (!trimmedPw) errors.password = 'Informe a senha'
   else if (trimmedPw.length < 6) errors.password = 'A senha deve ter ao menos 6 caracteres'
   return errors
 }
 
-export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormProps) {
-  const [identifier, setIdentifier] = useState('')
+export function RegisterForm({ onSubmit, onGithubClick, onGmailClick }: RegisterFormProps) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const errs = validate(identifier, password)
+    const errs = validate(name, email, password)
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
       return
     }
     setErrors({})
-    onSubmit?.({ identifier: identifier.trim(), password: password.trim(), remember })
+    onSubmit?.({ name: name.trim(), email: email.trim(), password: password.trim(), remember })
   }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       <FormField
-        id="identifier"
-        label="Email ou usuário"
+        id="name"
+        label="Nome"
         type="text"
-        placeholder="usuario123"
-        value={identifier}
+        placeholder="Nome completo"
+        value={name}
         onChange={(e) => {
-          setIdentifier(e.target.value)
-          if (errors.identifier) setErrors((prev) => ({ ...prev, identifier: undefined }))
+          setName(e.target.value)
+          if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }))
         }}
-        error={errors.identifier}
-        autoComplete="username"
+        error={errors.name}
+        autoComplete="name"
+      />
+      <FormField
+        id="email"
+        label="Email"
+        type="email"
+        placeholder="Digite seu email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value)
+          if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
+        }}
+        error={errors.email}
+        autoComplete="email"
       />
       <FormField
         id="password"
@@ -75,21 +95,18 @@ export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormPr
           if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }))
         }}
         error={errors.password}
-        autoComplete="current-password"
+        autoComplete="new-password"
       />
 
-      <div className="flex items-center justify-between">
-        <Checkbox
-          id="remember"
-          label="Lembrar-me"
-          checked={remember}
-          onChange={setRemember}
-        />
-        <TextLink href="#">Esqueci a senha</TextLink>
-      </div>
+      <Checkbox
+        id="remember"
+        label="Lembrar-me"
+        checked={remember}
+        onChange={setRemember}
+      />
 
       <Button type="submit">
-        Login <span aria-hidden="true">→</span>
+        Cadastrar <span aria-hidden="true">→</span>
       </Button>
 
       <Divider label="ou entre com outras contas" />
@@ -97,9 +114,9 @@ export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormPr
       <SocialLogins onGithubClick={onGithubClick} onGmailClick={onGmailClick} />
 
       <p className="text-center text-sm text-text-muted mt-2">
-        Ainda não tem conta?{' '}
-        <TextLink to="/cadastro" className="font-semibold">
-          Crie seu cadastro! 📋
+        Já tem conta?{' '}
+        <TextLink to="/login" className="font-semibold">
+          Faça seu login! →
         </TextLink>
       </p>
     </form>

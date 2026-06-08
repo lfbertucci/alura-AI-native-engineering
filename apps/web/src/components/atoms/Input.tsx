@@ -7,9 +7,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export function Input({ hasError = false, className = '', ...rest }: InputProps) {
   return (
     <input
-      className={`w-full px-4 py-3 rounded-lg bg-[var(--color-surface-input)] text-[var(--color-text)] placeholder-[var(--color-text-subtle)] border ${
-        hasError ? 'border-[var(--color-error)]' : 'border-[var(--color-border)]'
-      } focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent text-sm ${className}`}
+      className={`w-full px-4 py-3 rounded-lg bg-surface-input text-text placeholder:text-text-subtle border ${
+        hasError ? 'border-error' : 'border-border'
+      } focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent text-sm ${className}`}
       aria-invalid={hasError || undefined}
       {...rest}
     />

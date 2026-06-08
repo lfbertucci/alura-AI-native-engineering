@@ -4,7 +4,9 @@ import { LoginForm } from '../organisms/LoginForm'
 export function LoginPage() {
   return (
     <AuthTemplate
-      bannerSrc="/banner-login.png"
+      bannerSrc="/banner-login.webp"
+      bannerWidth={700}
+      bannerHeight={1094}
       bannerAlt="Mulher sorrindo em ambiente tecnológico com código connect"
       title="Login"
       subtitle="Boas-vindas! Faça seu login."
