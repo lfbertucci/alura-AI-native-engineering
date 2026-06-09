@@ -10,6 +10,8 @@ This is an educational project developed as part of Alura's **AI Native Engineer
 
 The goal is not just to learn a new framework or language, but to experience a **new paradigm of software development** — one where AI tools augment every phase: from designing architecture and writing code to reviewing, testing, and refactoring. Every feature in this project is an opportunity to explore what it means to develop software in the AI Age.
 
+My background is in **.NET / C#** and **Angular** — NestJS and React are outside my day-to-day stack. That makes this project a genuine learning exercise: building something real in an unfamiliar ecosystem, with AI as the primary collaborator throughout.
+
 > **For educational purposes only.**
 
 ---
