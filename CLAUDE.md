@@ -55,6 +55,41 @@ src/components/
 - Styling is done exclusively with Tailwind utility classes — no separate CSS files for components.
 - Every component must have a co-located test file (e.g., `Button.test.tsx` next to `Button.tsx`) covering its essential usage: renders correctly, key interactions, and relevant prop variations.
 
+### Colors
+
+The project uses **Tailwind v4** with `@theme` in `src/index.css` (no `tailwind.config.js`). All palette colors are declared there as `--color-*` variables and become Tailwind tokens automatically:
+
+| CSS variable | Tailwind token examples |
+|---|---|
+| `--color-bg` | `bg-bg`, `text-bg` |
+| `--color-surface` | `bg-surface` |
+| `--color-surface-input` | `bg-surface-input` |
+| `--color-border` | `border-border` |
+| `--color-accent` | `bg-accent`, `text-accent`, `ring-accent`, `border-accent` |
+| `--color-accent-hover` | `hover:bg-accent-hover`, `hover:text-accent-hover` |
+| `--color-text` | `text-text` |
+| `--color-text-muted` | `text-text-muted` |
+| `--color-text-subtle` | `text-text-subtle` |
+| `--color-error` | `text-error`, `border-error` |
+
+**Rules:**
+- Never use hex literals in JSX/TSX (e.g. `text-[#0d0f14]`). Use the token (`text-bg`).
+- Never use `[var(--color-*)]` arbitrary values in class strings. Use the generated token directly.
+- SVG attributes (`stroke`, `fill`) cannot use Tailwind classes — reference the CSS variable instead: `stroke="var(--color-bg)"`.
+- To add a new color, declare it in `src/index.css` under `@theme` and use the generated token in components.
+
+### Font sizes
+
+Use Tailwind's built-in scale — never use arbitrary sizes like `text-[14px]` or inline `style={{ fontSize: '...' }}`.
+
+| Need | Class |
+|---|---|
+| Very small (10–11px) | `text-xs` |
+| Small (14px) | `text-sm` |
+| Base (16px) | `text-base` |
+| Large (18px) | `text-lg` |
+| XL+ | `text-xl`, `text-2xl`, `text-3xl`, … |
+
 ## Backend: REST Principles
 
 - **Resources as nouns:** URLs identify resources, never actions (`/users`, `/orders/:id`, not `/getUser` or `/createOrder`).

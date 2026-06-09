@@ -14,7 +14,7 @@ export function FormField({ id, label, error, ...inputProps }: FormFieldProps) {
       <Label htmlFor={id}>{label}</Label>
       <Input id={id} hasError={!!error} {...inputProps} />
       {error && (
-        <p role="alert" className="text-xs text-[var(--color-error)] mt-0.5">
+        <p role="alert" className="text-xs text-error mt-0.5">
           {error}
         </p>
       )}
