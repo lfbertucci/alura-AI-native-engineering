@@ -4,7 +4,10 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
-describe('AppController (e2e)', () => {
+const hasPostgres = Boolean(process.env.DATABASE_HOST || process.env.DATABASE_URL);
+const describeIfPg = hasPostgres ? describe : describe.skip;
+
+describeIfPg('AppController (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {

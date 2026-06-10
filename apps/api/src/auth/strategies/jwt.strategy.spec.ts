@@ -1,10 +1,13 @@
+import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
+
+const mockConfig = { get: (key: string, fallback: string) => fallback } as unknown as ConfigService;
 
 describe('JwtStrategy', () => {
   let strategy: JwtStrategy;
 
   beforeEach(() => {
-    strategy = new JwtStrategy();
+    strategy = new JwtStrategy(mockConfig);
   });
 
   it('should be defined', () => {
