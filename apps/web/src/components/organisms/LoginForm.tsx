@@ -16,6 +16,8 @@ interface LoginFormProps {
   onSubmit?: (values: LoginFormValues) => void
   onGithubClick?: () => void
   onGmailClick?: () => void
+  loading?: boolean
+  serverError?: string
 }
 
 interface FormErrors {
@@ -32,7 +34,7 @@ function validate(identifier: string, password: string): FormErrors {
   return errors
 }
 
-export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormProps) {
+export function LoginForm({ onSubmit, onGithubClick, onGmailClick, loading, serverError }: LoginFormProps) {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
@@ -88,8 +90,14 @@ export function LoginForm({ onSubmit, onGithubClick, onGmailClick }: LoginFormPr
         <TextLink href="#">Esqueci a senha</TextLink>
       </div>
 
-      <Button type="submit">
-        Login <span aria-hidden="true">→</span>
+      {serverError && (
+        <p role="alert" className="text-sm text-error text-center">
+          {serverError}
+        </p>
+      )}
+
+      <Button type="submit" disabled={loading}>
+        {loading ? 'Entrando...' : <>Login <span aria-hidden="true">→</span></>}
       </Button>
 
       <Divider label="ou entre com outras contas" />

@@ -17,6 +17,8 @@ interface RegisterFormProps {
   onSubmit?: (values: RegisterFormValues) => void
   onGithubClick?: () => void
   onGmailClick?: () => void
+  loading?: boolean
+  serverError?: string
 }
 
 interface FormErrors {
@@ -38,7 +40,7 @@ function validate(name: string, email: string, password: string): FormErrors {
   return errors
 }
 
-export function RegisterForm({ onSubmit, onGithubClick, onGmailClick }: RegisterFormProps) {
+export function RegisterForm({ onSubmit, onGithubClick, onGmailClick, loading, serverError }: RegisterFormProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -105,8 +107,14 @@ export function RegisterForm({ onSubmit, onGithubClick, onGmailClick }: Register
         onChange={setRemember}
       />
 
-      <Button type="submit">
-        Cadastrar <span aria-hidden="true">→</span>
+      {serverError && (
+        <p role="alert" className="text-sm text-error text-center">
+          {serverError}
+        </p>
+      )}
+
+      <Button type="submit" disabled={loading}>
+        {loading ? 'Cadastrando...' : <>Cadastrar <span aria-hidden="true">→</span></>}
       </Button>
 
       <Divider label="ou entre com outras contas" />

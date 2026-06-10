@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Full-stack monorepo (pnpm workspaces) with two apps:
-- `apps/api` — NestJS 11 backend (TypeScript, port 3000)
+- `apps/api` — NestJS 11 backend (TypeScript, port 3000), PostgreSQL 16 via TypeORM
 - `apps/web` — React 19 + Vite frontend (TypeScript)
 
 ## Commands
@@ -30,6 +30,19 @@ All commands run from the project root with `pnpm run <script>`.
 | `lint:api` | Lint |
 
 To run a single NestJS test: `cd apps/api && npx jest <test-file-pattern>`
+
+### Database (PostgreSQL + TypeORM)
+| Script | Where | Action |
+|---|---|---|
+| `db:up` | root | `docker compose up -d` — start Postgres |
+| `db:down` | root | `docker compose down` — stop Postgres |
+| `migration:run` | root | Apply pending migrations via API filter |
+| `migration:run` | `apps/api` | Apply pending migrations (direct) |
+| `migration:revert` | `apps/api` | Roll back last migration |
+| `migration:generate <path>` | `apps/api` | Generate migration from entity diff |
+| `migration:show` | `apps/api` | List applied/pending migrations |
+
+Migrations run automatically on API boot (`migrationsRun: true`). The DB config lives in `apps/api/.env` (gitignored) — copy from `apps/api/.env.example` to get started. Docker named volume `pgdata` persists data across container restarts.
 
 ## Architecture
 

@@ -31,6 +31,7 @@ My background is in **.NET / C#** and **Angular** — NestJS and React are outsi
 |---|---|
 | Backend | NestJS 11, TypeScript, REST |
 | Frontend | React 19, Vite, TypeScript, Tailwind v4 |
+| Database | PostgreSQL 16 (Docker), TypeORM |
 | Monorepo | pnpm workspaces |
 | Quality | ESLint, Prettier, Jest, strict TypeScript |
 
@@ -58,10 +59,27 @@ Install dependencies from the repo root:
 pnpm install
 ```
 
+### Database (PostgreSQL via Docker)
+
+A `docker-compose.yml` at the repo root starts Postgres 16 with a named volume so data persists across restarts.
+
+```bash
+pnpm db:up    # docker compose up -d  (start Postgres)
+pnpm db:down  # docker compose down   (stop Postgres)
+```
+
+Migrations run automatically when the API boots (`migrationsRun: true`). You can also run them manually:
+
+```bash
+pnpm migration:run   # apply pending migrations
+```
+
+Copy `apps/api/.env.example` to `apps/api/.env` before starting (the default values match the docker-compose config).
+
 ### Run in development
 
 ```bash
-# Start the API (watch mode)
+# Start the API (watch mode) — requires Postgres running
 pnpm dev:api
 
 # Start the web app (HMR)
