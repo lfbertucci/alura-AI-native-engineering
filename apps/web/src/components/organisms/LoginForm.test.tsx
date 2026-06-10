@@ -59,6 +59,24 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /login/i }))
     expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ remember: true }))
   })
+
+  it('shows serverError message when provided', () => {
+    render(
+      <MemoryRouter>
+        <LoginForm serverError="Credenciais inválidas" />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('Credenciais inválidas')
+  })
+
+  it('disables the submit button when loading', () => {
+    render(
+      <MemoryRouter>
+        <LoginForm loading />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('button', { name: /entrando/i })).toBeDisabled()
+  })
 })
 
 describe('LoginForm — acessibilidade (WCAG 2 AA)', () => {

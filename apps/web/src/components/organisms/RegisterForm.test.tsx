@@ -74,6 +74,24 @@ describe('RegisterForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /cadastrar/i }))
     expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ remember: true }))
   })
+
+  it('shows serverError message when provided', () => {
+    render(
+      <MemoryRouter>
+        <RegisterForm serverError="Email já em uso" />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('Email já em uso')
+  })
+
+  it('disables the submit button when loading', () => {
+    render(
+      <MemoryRouter>
+        <RegisterForm loading />
+      </MemoryRouter>
+    )
+    expect(screen.getByRole('button', { name: /cadastrando/i })).toBeDisabled()
+  })
 })
 
 describe('RegisterForm — acessibilidade (WCAG 2 AA)', () => {
