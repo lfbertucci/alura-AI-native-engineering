@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { User } from './users/entities/user.entity';
-import { CreateUsers1781049600000 } from './database/migrations/1781049600000-CreateUsers';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { UsersModule } from './users/users.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { PostsModule } from './posts/posts.module.js';
+import { User } from './users/entities/user.entity.js';
+import { Post } from './posts/entities/post.entity.js';
+import { Tag } from './posts/entities/tag.entity.js';
+import { Comment } from './posts/entities/comment.entity.js';
+import { PostLike } from './posts/entities/post-like.entity.js';
+import { CreateUsers1781049600000 } from './database/migrations/1781049600000-CreateUsers.js';
+import { CreatePosts1781304000000 } from './database/migrations/1781304000000-CreatePosts.js';
 
 @Module({
   imports: [
@@ -21,14 +27,15 @@ import { CreateUsers1781049600000 } from './database/migrations/1781049600000-Cr
         username: config.get<string>('DATABASE_USER', 'postgres'),
         password: config.get<string>('DATABASE_PASSWORD', 'postgres'),
         database: config.get<string>('DATABASE_NAME', 'carreira_native_ai'),
-        entities: [User],
-        migrations: [CreateUsers1781049600000],
+        entities: [User, Post, Tag, Comment, PostLike],
+        migrations: [CreateUsers1781049600000, CreatePosts1781304000000],
         synchronize: false,
         migrationsRun: true,
       }),
     }),
     UsersModule,
     AuthModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
