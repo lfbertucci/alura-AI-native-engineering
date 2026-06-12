@@ -39,7 +39,7 @@ export function LoginPage() {
     <AuthTemplate
       bannerSrc="/banner-login.webp"
       bannerWidth={700}
-      bannerHeight={1094}
+      bannerHeight={1080}
       bannerAlt="Mulher sorrindo em ambiente tecnológico com código connect"
       title="Login"
       subtitle="Boas-vindas! Faça seu login."
