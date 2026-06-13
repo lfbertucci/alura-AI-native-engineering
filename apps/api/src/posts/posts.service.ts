@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -208,6 +209,8 @@ export class PostsService {
         where: { id: dto.parentId, postId },
       });
       if (!parent) throw new NotFoundException('Comentário pai não encontrado');
+      if (parent.parentId !== null)
+        throw new BadRequestException('Não é permitido responder a uma resposta');
     }
 
     const comment = await this.commentRepo.save(
@@ -224,7 +227,8 @@ export class PostsService {
       relations: ['author'],
     });
 
-    return this.mapComment(withAuthor!, []);
+    if (!withAuthor) throw new NotFoundException('Comentário não encontrado');
+    return this.mapComment(withAuthor, []);
   }
 
   async findTags() {
@@ -232,15 +236,15 @@ export class PostsService {
   }
 
   private async findOrCreateTags(names: string[]): Promise<Tag[]> {
-    const tags: Tag[] = [];
-    for (const name of names) {
-      let tag = await this.tagRepo.findOne({ where: { name } });
-      if (!tag) {
-        tag = await this.tagRepo.save(this.tagRepo.create({ name }));
-      }
-      tags.push(tag);
-    }
-    return tags;
+    if (!names.length) return [];
+    await this.tagRepo
+      .createQueryBuilder()
+      .insert()
+      .into(Tag)
+      .values(names.map((name) => ({ name })))
+      .orIgnore()
+      .execute();
+    return this.tagRepo.find({ where: { name: In(names) } });
   }
 
   private mapToListDto(
@@ -258,7 +262,7 @@ export class PostsService {
       author: {
         id: post.author.id,
         name: post.author.name,
-        handle: '@' + post.author.email.split('@')[0],
+        handle: '@' + post.author.name.toLowerCase().replace(/\s+/g, '_'),
       },
       counts: { likes, comments },
       likedByMe,
@@ -273,7 +277,7 @@ export class PostsService {
       author: {
         id: comment.author.id,
         name: comment.author.name,
-        handle: '@' + comment.author.email.split('@')[0],
+        handle: '@' + comment.author.name.toLowerCase().replace(/\s+/g, '_'),
       },
       createdAt: comment.createdAt,
       replies: replies.map((r) => this.mapComment(r, [])),

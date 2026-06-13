@@ -14,7 +14,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { join } from 'path';
+import { unlink } from 'node:fs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
@@ -22,6 +23,14 @@ import { PostsService } from './posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { GetPostsQueryDto } from './dto/get-posts-query.dto.js';
+
+const ALLOWED_MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+  'image/avif': '.avif',
+};
 
 @ApiTags('posts')
 @Controller()
@@ -56,12 +65,12 @@ export class PostsController {
       storage: diskStorage({
         destination: join(process.cwd(), 'uploads'),
         filename: (_req, file, cb) => {
-          const ext = extname(file.originalname);
+          const ext = ALLOWED_MIME_TO_EXT[file.mimetype] ?? '.bin';
           cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
         },
       }),
       fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.startsWith('image/')) {
+        if (!ALLOWED_MIME_TO_EXT[file.mimetype]) {
           return cb(new Error('Apenas imagens são permitidas'), false);
         }
         cb(null, true);
@@ -69,13 +78,18 @@ export class PostsController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  create(
+  async create(
     @CurrentUser() user: { userId: string },
     @Body() dto: CreatePostDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const thumbnailUrl = file ? `/uploads/${file.filename}` : undefined;
-    return this.postsService.create(user.userId, dto, thumbnailUrl);
+    try {
+      return await this.postsService.create(user.userId, dto, thumbnailUrl);
+    } catch (err) {
+      if (file) unlink(file.path, () => {});
+      throw err;
+    }
   }
 
   @Post('posts/:id/likes')

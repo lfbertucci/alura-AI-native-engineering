@@ -24,7 +24,10 @@ export function useAuth(): AuthState {
     authService
       .getMe()
       .then(setUser)
-      .catch(() => clearToken())
+      .catch(() => {
+        clearToken()
+        navigate('/login')
+      })
       .finally(() => setIsLoading(false))
   }, [])
 

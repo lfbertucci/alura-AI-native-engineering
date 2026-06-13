@@ -14,6 +14,7 @@ export function PostDetailPage() {
   const [post, setPost] = useState<PostDetailDto | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [commentError, setCommentError] = useState('')
 
   useEffect(() => {
     if (!id) return
@@ -52,19 +53,24 @@ export function PostDetailPage() {
 
   async function handleAddComment(content: string, parentId?: string) {
     if (!post) return
-    const newComment = await postService.createComment(post.id, { content, parentId })
-    setPost((p) => {
-      if (!p) return p
-      if (parentId) {
-        return {
-          ...p,
-          comments: p.comments.map((c) =>
-            c.id === parentId ? { ...c, replies: [...c.replies, newComment] } : c,
-          ),
+    try {
+      setCommentError('')
+      const newComment = await postService.createComment(post.id, { content, parentId })
+      setPost((p) => {
+        if (!p) return p
+        if (parentId) {
+          return {
+            ...p,
+            comments: p.comments.map((c) =>
+              c.id === parentId ? { ...c, replies: [...c.replies, newComment] } : c,
+            ),
+          }
         }
-      }
-      return { ...p, comments: [...p.comments, newComment] }
-    })
+        return { ...p, comments: [...p.comments, newComment] }
+      })
+    } catch {
+      setCommentError('Não foi possível publicar o comentário. Tente novamente.')
+    }
   }
 
   return (
@@ -76,6 +82,9 @@ export function PostDetailPage() {
           <>
             <PostDetailCard post={post} isAuthenticated={auth.isAuthenticated} onLike={handleLike} />
             {post.code && <CodeBlock code={post.code} />}
+            {commentError && (
+              <p role="alert" className="text-sm text-error">{commentError}</p>
+            )}
             <CommentsSection
               postId={post.id}
               comments={post.comments}
