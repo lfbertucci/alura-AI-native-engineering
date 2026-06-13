@@ -12,6 +12,7 @@ export function HomePage() {
       .getMe()
       .then((user) => setUserName(user.name))
       .catch(() => {
+        clearToken()
         navigate('/login')
       })
   }, [navigate])

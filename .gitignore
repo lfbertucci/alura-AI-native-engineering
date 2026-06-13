@@ -13,6 +13,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# uploads (keep directory, ignore content)
+apps/api/uploads/*
+!apps/api/uploads/.gitkeep
+
 # editor
 .vscode/*
 !.vscode/extensions.json
