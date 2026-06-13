@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   UploadedFile,
@@ -49,7 +50,7 @@ export class PostsController {
   @Get('posts/:id')
   @UseGuards(OptionalJwtAuthGuard)
   findOne(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user?: { userId: string },
   ) {
     return this.postsService.findOne(id, user?.userId);
@@ -97,7 +98,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   like(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: { userId: string },
   ) {
     return this.postsService.like(id, user.userId);
@@ -108,7 +109,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async unlike(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: { userId: string },
   ) {
     await this.postsService.unlike(id, user.userId);
@@ -119,7 +120,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   addComment(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: { userId: string },
     @Body() dto: CreateCommentDto,
   ) {

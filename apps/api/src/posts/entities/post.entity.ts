@@ -29,7 +29,7 @@ export class Post {
   @Column('text', { nullable: true })
   code: string | null;
 
-  @Column({ nullable: true })
+  @Column('varchar', { nullable: true })
   thumbnailUrl: string | null;
 
   @Column()
